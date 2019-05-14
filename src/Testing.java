@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -15,6 +16,8 @@ import javax.swing.event.DocumentListener;
 public class Testing extends JFrame {
 	JTextField textField;
 	JPanel panel;
+	int words = 0;
+	double startTime;
 	JButton button1;
 	JButton button2;
 	Border goodBorder = BorderFactory.createLineBorder(Color.GREEN, 5);
@@ -31,6 +34,7 @@ public class Testing extends JFrame {
 		frame.setVisible(true);
 		// pack();
 
+		startTime = System.currentTimeMillis();
 	}
 
 	public JPanel typingField() {
@@ -41,7 +45,7 @@ public class Testing extends JFrame {
 		Font textFont = new Font("Comic Sans MS", Font.BOLD, 32);
 
 		JTextArea textArea = new JTextArea(
-				"This is a test. sdkfjsldkfjasldkfjas;ldkfja;lskdfj;aslkdjf;alskdjf lkjsalfkjsdlakfjsldkfj lkdsfjslkdjfsldkfjslk djfslkdjfsldkjf l",
+				"Cheese is a dairy product derived from milk that is produced in a wide range of flavors, textures, and forms by coagulation of the milk protein casein. It comprises proteins and fat from milk, usually the milk of cows, buffalo, goats, or sheep.",
 				16, 24);
 
 		textArea.setLineWrap(true);
@@ -55,6 +59,8 @@ public class Testing extends JFrame {
 		// set the border of this component
 		textField.setBorder(goodBorder);
 		textField.getDocument().addDocumentListener(new DocumentListener() {
+			
+			
 			public void changedUpdate(DocumentEvent e) {
 				update();
 			}
@@ -64,14 +70,20 @@ public class Testing extends JFrame {
 			}
 
 			public void insertUpdate(DocumentEvent e) {
-				update();
+				boolean good = update();
+				if(good && textField.getText().endsWith(" "))
+					words = (new StringTokenizer(textField.getText())).countTokens(); // count number of words if new word is typed (count words to reduce cheating)
+				System.out.println(((double) words * 60000.0) / ((double)(System.currentTimeMillis() - startTime))); // print wpm to the screen!
+
 			}
 			
-			public void update() {
+			public boolean update() {
 				if(!textArea.getText().startsWith(textField.getText())){
 					textField.setBorder(badBorder);
+					return false;
 				}else {
 					textField.setBorder(goodBorder);
+					return true;
 				}
 			}
 		});
