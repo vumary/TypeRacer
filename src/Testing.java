@@ -52,6 +52,7 @@ public class Testing extends JFrame {
 		textArea.setFont(textFont);
 		textArea.setEditable(false);
 		textArea.setFocusable(false);
+		textArea.setWrapStyleWord(true); //make words cut off by the whole word
 
 		textField = new JTextField(18); // 18 columns wide
 		textField.setFont(typeFont);
