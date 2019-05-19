@@ -6,15 +6,18 @@ import java.util.StringTokenizer;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 public class Testing extends JFrame {
 	JTextField textField;
+	JLabel label;
 	JPanel panel;
 	int words = 0;
 	double startTime;
@@ -44,12 +47,15 @@ public class Testing extends JFrame {
 		Font typeFont = new Font("Comic Sans MS", Font.BOLD, 40);
 		Font textFont = new Font("Comic Sans MS", Font.BOLD, 32);
 
+		label = new JLabel("WPM: ", SwingConstants.CENTER);
+		
 		JTextArea textArea = new JTextArea(
 				"Cheese is a dairy product derived from milk that is produced in a wide range of flavors, textures, and forms by coagulation of the milk protein casein. It comprises proteins and fat from milk, usually the milk of cows, buffalo, goats, or sheep.",
 				16, 24);
 
 		textArea.setLineWrap(true);
 		textArea.setFont(textFont);
+		label.setFont(textFont);
 		textArea.setEditable(false);
 		textArea.setFocusable(false);
 
@@ -73,8 +79,7 @@ public class Testing extends JFrame {
 				boolean good = update();
 				if(good && textField.getText().endsWith(" "))
 					words = (new StringTokenizer(textField.getText())).countTokens(); // count number of words if new word is typed (count words to reduce cheating)
-				System.out.println(((double) words * 60000.0) / ((double)(System.currentTimeMillis() - startTime))); // print wpm to the screen!
-
+				label.setText("WPM: " + (int)(((double) words * 60000.0) / ((double)(System.currentTimeMillis() - startTime))));
 			}
 			
 			public boolean update() {
@@ -88,7 +93,7 @@ public class Testing extends JFrame {
 			}
 		});
 
-
+		panel.add(label);
 		panel.add(textField); // set listener here
 		panel.add(textArea);
 		panel.setVisible(true);
