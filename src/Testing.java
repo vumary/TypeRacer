@@ -21,18 +21,55 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 public class Testing extends JFrame{
+	/**
+	 * 
+	 */
 	JTextField textField;
+	/**
+	 * 
+	 */
 	JLabel label;
+	/**
+	 * 
+	 */
 	JPanel panel;
+	/**
+	 * 
+	 */
 	int words = 0;
+	/**
+	 * 
+	 */
 	double startTime;
+	/**
+	 * 
+	 */
 	JButton button1;
+	/**
+	 * 
+	 */
 	JButton button2;
+	/**
+	 * 
+	 */
 	Border goodBorder = BorderFactory.createLineBorder(Color.GREEN, 5);
+	/**
+	 * 
+	 */
 	Border badBorder = BorderFactory.createLineBorder(Color.RED, 5);
+	/**
+	 * 
+	 */
 	Border typeBorder = BorderFactory.createLineBorder(Color.BLUE, 5);
+	/**
+	 * 
+	 */
+	Dictionary dictionary = new Dictionary();
 
 
+	/**
+	 * 
+	 */
 	public Testing() {
 
 		JFrame frame = new JFrame("TypeRacer");
@@ -45,7 +82,7 @@ public class Testing extends JFrame{
 		
 
 		frame.getContentPane().add(typingField());
-		frame.getContentPane().add(new CarPaint());	
+		//frame.getContentPane().add(new CarPaint());	
 		frame.setVisible(true);
 
 
@@ -54,6 +91,9 @@ public class Testing extends JFrame{
 
 	}
 
+	/**
+	 * @return
+	 */
 	public JPanel typingField() {
 		panel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // new flow layout to hold text field
 
@@ -63,9 +103,7 @@ public class Testing extends JFrame{
 
 		label = new JLabel("WPM: ", SwingConstants.CENTER);
 		
-		JTextArea textArea = new JTextArea(
-				"Cheese is a dairy product derived from milk that is produced in a wide range of flavors, textures, and forms by coagulation of the milk protein casein. It comprises proteins and fat from milk, usually the milk of cows, buffalo, goats, or sheep.",
-				8, 40);
+		JTextArea textArea = new JTextArea(dictionary.getSentence(),8, 40);
 		
 		textArea.setBorder(typeBorder);
 		textArea.setLineWrap(true);
@@ -118,6 +156,9 @@ public class Testing extends JFrame{
 		return panel;
 	}
 	
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		// GUIS should be constructed on the EDT.
 		JFrame tt = new Testing();
