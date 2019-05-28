@@ -74,7 +74,7 @@ public class Testing extends JFrame{
 
 		JFrame frame = new JFrame("TypeRacer");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setSize(800, 800);
+		frame.setSize(800, 1000);
 		frame.setResizable(false);
 		frame.setLayout(new GridLayout(2, 1));
 		startTime = System.currentTimeMillis();//we should start counting only as soon as person starts typing??? TEST
@@ -113,7 +113,7 @@ public class Testing extends JFrame{
 		textArea.setFocusable(false);
 		textArea.setWrapStyleWord(true); //make words cut off by the whole word
 
-		textField = new JTextField(22); // 18 columns wide
+		textField = new JTextField(22); // 22 columns wide
 		textField.setFont(typeFont); //player types in this
 		// create a line border with the specified color and width
 		// set the border of this component
