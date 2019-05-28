@@ -102,6 +102,7 @@ public class CarPaint extends JPanel implements ActionListener {
 		f.setTitle("CARPAINt");
 		f.setSize(screen_width, screen_size);
 		
+		
 
 		f.getContentPane().setBackground(new Color(144,198,111)); //set background to match lane border
 
