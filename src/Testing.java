@@ -61,6 +61,10 @@ public class Testing extends JFrame{
 	 * 
 	 */
 	Border typeBorder = BorderFactory.createLineBorder(Color.BLUE, 5);
+	/**
+	 * 
+	 */
+	Dictionary dictionary = new Dictionary();
 
 
 	/**
@@ -70,7 +74,7 @@ public class Testing extends JFrame{
 
 		JFrame frame = new JFrame("TypeRacer");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setSize(800, 800);
+		frame.setSize(800, 1000);
 		frame.setResizable(false);
 		frame.setLayout(new GridLayout(2, 1));
 		startTime = System.currentTimeMillis();//we should start counting only as soon as person starts typing??? TEST
@@ -78,7 +82,7 @@ public class Testing extends JFrame{
 		
 
 		frame.getContentPane().add(typingField());
-		frame.getContentPane().add(new CarPaint());	
+		//frame.getContentPane().add(new CarPaint());	
 		frame.setVisible(true);
 
 
@@ -99,9 +103,7 @@ public class Testing extends JFrame{
 
 		label = new JLabel("WPM: ", SwingConstants.CENTER);
 		
-		JTextArea textArea = new JTextArea(
-				"Cheese is a dairy product derived from milk that is produced in a wide range of flavors, textures, and forms by coagulation of the milk protein casein. It comprises proteins and fat from milk, usually the milk of cows, buffalo, goats, or sheep.",
-				8, 40);
+		JTextArea textArea = new JTextArea(dictionary.getSentence(),8, 40);
 		
 		textArea.setBorder(typeBorder);
 		textArea.setLineWrap(true);
@@ -111,7 +113,7 @@ public class Testing extends JFrame{
 		textArea.setFocusable(false);
 		textArea.setWrapStyleWord(true); //make words cut off by the whole word
 
-		textField = new JTextField(22); // 18 columns wide
+		textField = new JTextField(22); // 22 columns wide
 		textField.setFont(typeFont); //player types in this
 		// create a line border with the specified color and width
 		// set the border of this component
@@ -155,7 +157,7 @@ public class Testing extends JFrame{
 	}
 	
 	/**
-	 * @param args that do nothing.
+	 * @param args
 	 */
 	public static void main(String[] args) {
 		// GUIS should be constructed on the EDT.
