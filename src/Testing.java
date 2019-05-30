@@ -6,9 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -65,6 +68,7 @@ public class Testing extends JFrame{
 	 * Way of storing every value of the textArea and comparing to textField. Any mismatches which are not null --> badBorder
 	 */
 	Dictionary dictionary = new Dictionary();
+	ArrayList<Car> cars2 = new ArrayList<Car>(); //list of cars
 
 
 	/**
@@ -74,7 +78,7 @@ public class Testing extends JFrame{
 	 * Typing field is added so it is an interactive JFrame.
 	 */
 	public Testing() {
-
+	
 		JFrame frame = new JFrame("TypeRacer");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setSize(800, 1000);
@@ -82,16 +86,16 @@ public class Testing extends JFrame{
 		frame.setLayout(new GridLayout(2, 1));
 		startTime = System.currentTimeMillis();//we should start counting only as soon as person starts typing??? TEST
 		
+		//testing below
 		
-
+		frame.getContentPane().add(raceTrack());
+		
+		//testing above
+		
 		frame.getContentPane().add(typingField());
-		//frame.getContentPane().add(new CarPaint());	
+		
 		frame.setVisible(true);
-
-
-		//add(frame);
-		// pack();
-
+		
 	}
 
 	/**
@@ -163,6 +167,47 @@ public class Testing extends JFrame{
 
 		return panel;
 	}
+	
+	
+	//testing below
+	
+	public void newCar() {
+		//creates as many cars in one line as needed
+		for(int i = 0; i < 4; i ++) {
+			Car newCar = new Car("green_102x28.png", i);
+
+			cars2.add(newCar);
+		}
+	}
+	
+	public JPanel raceTrack() {
+		
+		String bg = "bg_800_400.png";
+		
+		panel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // new flow layout to hold text field
+		panel.setSize(800, 400);
+		panel.setBackground(new Color(144,198,111)); //set background to match lane border
+	
+		String src = new File("").getAbsolutePath()+"/src/"; //path to image setup
+		ImageIcon backg = new ImageIcon(src+bg);    //setups icon image
+		JLabel background = new JLabel(backg);
+		background.setBounds(0,0, 800, 400); //set location and size of icon
+		
+		//traverse every car in the array
+		newCar();
+		for(int j = 0; j < cars2.size(); j ++) {
+			//display
+			panel.add(cars2.get(j).img_c);
+		}
+		
+		panel.add(background);
+		
+		return panel;
+	}
+	
+	
+	//testing above
+	
 	
 	/**
 	 * main method
