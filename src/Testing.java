@@ -6,10 +6,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+
+import java.io.File;
+
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -70,6 +74,7 @@ public class Testing extends JFrame {
 	 * mismatches which are not null --> badBorder
 	 */
 	Dictionary dictionary = new Dictionary();
+	ArrayList<Car> cars2 = new ArrayList<Car>(); // list of cars
 
 	/**
 	 * constructor Initializes the frame on top of which panel and all fields will
@@ -83,14 +88,18 @@ public class Testing extends JFrame {
 		frame.setSize(800, 1000);
 		frame.setResizable(false);
 		frame.setLayout(new GridLayout(2, 1));
+
 		startTime = System.currentTimeMillis();// we should start counting only as soon as person starts typing??? TEST
 
-		frame.getContentPane().add(typingField());
-		// frame.getContentPane().add(new CarPaint());
-		frame.setVisible(true);
+		// testing below
 
-		// add(frame);
-		// pack();
+		frame.getContentPane().add(raceTrack());
+
+		// testing above
+
+		frame.getContentPane().add(typingField());
+
+		frame.setVisible(true);
 
 	}
 
@@ -142,7 +151,7 @@ public class Testing extends JFrame {
 					words = (new StringTokenizer(textField.getText())).countTokens(); // count number of words if new
 																						// word is typed (count words to
 																						// reduce cheating)
-					percentWord = words/totalWords;
+					percentWord = words / totalWords;
 					arr.add(percentWord);
 				}
 				label.setText("WPM: "
@@ -168,6 +177,44 @@ public class Testing extends JFrame {
 
 		return panel;
 	}
+
+	// testing below
+
+	public void newCar() {
+		// creates as many cars in one line as needed
+		for (int i = 0; i < 4; i++) {
+			Car newCar = new Car("green_102x28.png", i);
+
+			cars2.add(newCar);
+		}
+	}
+
+	public JPanel raceTrack() {
+
+		String bg = "bg_800_400.png";
+
+		panel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // new flow layout to hold text field
+		panel.setSize(800, 400);
+		panel.setBackground(new Color(144, 198, 111)); // set background to match lane border
+
+		String src = new File("").getAbsolutePath() + "/src/"; // path to image setup
+		ImageIcon backg = new ImageIcon(src + bg); // setups icon image
+		JLabel background = new JLabel(backg);
+		background.setBounds(0, 0, 800, 400); // set location and size of icon
+
+		// traverse every car in the array
+		newCar();
+		for (int j = 0; j < cars2.size(); j++) {
+			// display
+			panel.add(cars2.get(j).img_c);
+		}
+
+		panel.add(background);
+
+		return panel;
+	}
+
+	// testing above
 
 	/**
 	 * main method
