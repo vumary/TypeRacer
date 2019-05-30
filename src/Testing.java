@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
@@ -20,9 +21,9 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-public class Testing extends JFrame{
+public class Testing extends JFrame {
 	/**
-	 * This is where the text is collected and compared to the contents of textArea. 
+	 * This is where the text is collected and compared to the contents of textArea.
 	 */
 	JTextField textField;
 	/**
@@ -37,20 +38,23 @@ public class Testing extends JFrame{
 	 * number of words typed
 	 */
 	int words = 0;
+	int totalWords = 0;
 	/**
-	 * Program start time 
+	 * Program start time
 	 */
 	double startTime;
 	/**
 	 * 
 	 */
+	double percentWord;
+	ArrayList<Double> arr;
 	JButton button1;
 	/**
 	 * 
 	 */
 	JButton button2;
 	/**
-	 * Green border when the contents of textField match textArea 
+	 * Green border when the contents of textField match textArea
 	 */
 	Border goodBorder = BorderFactory.createLineBorder(Color.GREEN, 5);
 	/**
@@ -62,16 +66,15 @@ public class Testing extends JFrame{
 	 */
 	Border typeBorder = BorderFactory.createLineBorder(Color.BLUE, 5);
 	/**
-	 * Way of storing every value of the textArea and comparing to textField. Any mismatches which are not null --> badBorder
+	 * Way of storing every value of the textArea and comparing to textField. Any
+	 * mismatches which are not null --> badBorder
 	 */
 	Dictionary dictionary = new Dictionary();
 
-
 	/**
-	 * constructor
-	 * Initializes the frame on top of which panel and all fields will be placed.
-	 * Start time begins here (for now).
-	 * Typing field is added so it is an interactive JFrame.
+	 * constructor Initializes the frame on top of which panel and all fields will
+	 * be placed. Start time begins here (for now). Typing field is added so it is
+	 * an interactive JFrame.
 	 */
 	public Testing() {
 
@@ -80,22 +83,21 @@ public class Testing extends JFrame{
 		frame.setSize(800, 1000);
 		frame.setResizable(false);
 		frame.setLayout(new GridLayout(2, 1));
-		startTime = System.currentTimeMillis();//we should start counting only as soon as person starts typing??? TEST
-		
-		
+		startTime = System.currentTimeMillis();// we should start counting only as soon as person starts typing??? TEST
 
 		frame.getContentPane().add(typingField());
-		//frame.getContentPane().add(new CarPaint());	
+		// frame.getContentPane().add(new CarPaint());
 		frame.setVisible(true);
 
-
-		//add(frame);
+		// add(frame);
 		// pack();
 
 	}
 
 	/**
-	 * The typing field includes all labels, textFields, textAreas, etc which are necessary for the game.
+	 * The typing field includes all labels, textFields, textAreas, etc which are
+	 * necessary for the game.
+	 * 
 	 * @return
 	 */
 	public JPanel typingField() {
@@ -106,28 +108,28 @@ public class Testing extends JFrame{
 		Font textFont = new Font("Courier", Font.PLAIN, 32);
 
 		label = new JLabel("WPM: ", SwingConstants.CENTER);
-		
-		JTextArea textArea = new JTextArea(dictionary.getSentence(),8, 40);
-		
+
+		JTextArea textArea = new JTextArea(dictionary.getSentence(), 8, 40);
+
 		textArea.setBorder(typeBorder);
 		textArea.setLineWrap(true);
 		textArea.setFont(textFont);
 		label.setFont(textFont);
 		textArea.setEditable(false);
 		textArea.setFocusable(false);
-		textArea.setWrapStyleWord(true); //make words cut off by the whole word
+		textArea.setWrapStyleWord(true); // make words cut off by the whole word
+		totalWords = (new StringTokenizer(textField.getText())).countTokens();
 
 		textField = new JTextField(22); // 22 columns wide
-		textField.setFont(typeFont); //player types in this
+		textField.setFont(typeFont); // player types in this
 		// create a line border with the specified color and width
 		// set the border of this component
 		textField.setBorder(goodBorder);
 		textField.getDocument().addDocumentListener(new DocumentListener() {
-			
-			
+
 			public void changedUpdate(DocumentEvent e) {
 				update();
-				
+
 			}
 
 			public void removeUpdate(DocumentEvent e) {
@@ -136,24 +138,27 @@ public class Testing extends JFrame{
 
 			public void insertUpdate(DocumentEvent e) {
 				boolean good = update();
-				if(good && textField.getText().endsWith(" "))
-					words = (new StringTokenizer(textField.getText())).countTokens(); // count number of words if new word is typed (count words to reduce cheating)
-				label.setText("WPM: " + (int)(((double) words * 60000.0) / ((double)(System.currentTimeMillis() - startTime))));
+				if (good && textField.getText().endsWith(" ")) {
+					words = (new StringTokenizer(textField.getText())).countTokens(); // count number of words if new
+																						// word is typed (count words to
+																						// reduce cheating)
+					percentWord = words/totalWords;
+					arr.add(percentWord);
+				}
+				label.setText("WPM: "
+						+ (int) (((double) words * 60000.0) / ((double) (System.currentTimeMillis() - startTime))));
 			}
-			
+
 			public boolean update() {
-				if(!textArea.getText().startsWith(textField.getText())){
+				if (!textArea.getText().startsWith(textField.getText())) {
 					textField.setBorder(badBorder);
 					return false;
-				}else {
+				} else {
 					textField.setBorder(goodBorder);
 					return true;
 				}
 			}
-			
-			public void carUpdate() {
-				
-			}
+
 		});
 
 		panel.add(label);
@@ -163,9 +168,10 @@ public class Testing extends JFrame{
 
 		return panel;
 	}
-	
+
 	/**
 	 * main method
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -173,6 +179,4 @@ public class Testing extends JFrame{
 		JFrame tt = new Testing();
 	}
 
-	
-	
 }
