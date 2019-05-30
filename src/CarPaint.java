@@ -118,7 +118,7 @@ public class CarPaint extends JPanel implements ActionListener {
 
 		for(int j = 0; j < cars2.size(); j ++) {
 			//display
-			f.add(cars2.get(j).img);
+			f.add(cars2.get(j).img_c);
 		}
 		//add bg after
 		f.add(background);

@@ -11,9 +11,12 @@ import javax.swing.JLabel;
  */
 public class Car {
 
-	private int x, y; //pos
+	private int x_c, y_c; //pos
 	private int w, h;
-	public JLabel img;
+	public JLabel img_c;
+	private int x_r, y_r; //pos
+
+	public JLabel img_r;
 	private int vx = 2; //velocity
 	private int WPM;
 	
@@ -31,16 +34,16 @@ public class Car {
 		//lane =  which lane the car is
 		String src = new File("").getAbsolutePath() + "/src/";
 		ImageIcon ghost = new ImageIcon(src + filename);
-		img = new JLabel(ghost); //conect img ot this objects img field
+		img_c = new JLabel(ghost); //conect img ot this objects img field
 		
 		//bound img to object
 		h = ghost.getIconHeight();
 		w = ghost.getIconWidth();
 		//calculate starting
 		
-		x = 0;
-		y = 75+(lane)*80;
-		img.setBounds(x,y,w,h);
+		x_c = 0;
+		y_c = 75+(lane)*80;
+		img_c.setBounds(x_c,y_c,w,h);
 	}
 	
 	
@@ -59,12 +62,19 @@ public class Car {
 	 * moves car across the screen by vx
 	 * call this to update position
 	 */
-	public void move() {
-		x += vx;
-		if(x >= screen_width - w) {
+	public void moveCur(double percentWord) {
+		while (x_c < percentWord*(screen_width)) {
+			x_c += vx;
+		}
+		if(x_c >= screen_width - w) {
 			System.out.println("reached finish line"); //update when classes are complete
 		}
-		img.setBounds(x,y,w,h);
+		img_c.setBounds(x_c,y_c,w,h);
+	}
+	
+	public void moveRec(File record) {
+		
+		
 	}
 
 	
@@ -73,7 +83,7 @@ public class Car {
 	 * used to add car to visual panels
 	 */
 	public JLabel getImg() {
-		return img;
+		return img_c;
 	}
 
 	
@@ -82,7 +92,7 @@ public class Car {
 	 * changes appearance of car
 	 */
 	public void setImg(JLabel img) {
-		this.img = img;
+		this.img_c = img;
 	}
 	
 	/**

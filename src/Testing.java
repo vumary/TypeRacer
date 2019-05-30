@@ -22,23 +22,23 @@ import javax.swing.event.DocumentListener;
 
 public class Testing extends JFrame{
 	/**
-	 * 
+	 * This is where the text is collected and compared to the contents of textArea. 
 	 */
 	JTextField textField;
 	/**
-	 * 
+	 * This is where the WPM is displayed on top of the textField and textArea
 	 */
 	JLabel label;
 	/**
-	 * 
+	 * Entire JPanel where all the other objects are displayed.
 	 */
 	JPanel panel;
 	/**
-	 * 
+	 * number of words typed
 	 */
 	int words = 0;
 	/**
-	 * 
+	 * Program start time 
 	 */
 	double startTime;
 	/**
@@ -50,25 +50,28 @@ public class Testing extends JFrame{
 	 */
 	JButton button2;
 	/**
-	 * 
+	 * Green border when the contents of textField match textArea 
 	 */
 	Border goodBorder = BorderFactory.createLineBorder(Color.GREEN, 5);
 	/**
-	 * 
+	 * Red border when contents of textField don't match textArea
 	 */
 	Border badBorder = BorderFactory.createLineBorder(Color.RED, 5);
 	/**
-	 * 
+	 * textArea border is default blue.
 	 */
 	Border typeBorder = BorderFactory.createLineBorder(Color.BLUE, 5);
 	/**
-	 * 
+	 * Way of storing every value of the textArea and comparing to textField. Any mismatches which are not null --> badBorder
 	 */
 	Dictionary dictionary = new Dictionary();
 
 
 	/**
-	 * 
+	 * constructor
+	 * Initializes the frame on top of which panel and all fields will be placed.
+	 * Start time begins here (for now).
+	 * Typing field is added so it is an interactive JFrame.
 	 */
 	public Testing() {
 
@@ -92,6 +95,7 @@ public class Testing extends JFrame{
 	}
 
 	/**
+	 * The typing field includes all labels, textFields, textAreas, etc which are necessary for the game.
 	 * @return
 	 */
 	public JPanel typingField() {
@@ -146,6 +150,10 @@ public class Testing extends JFrame{
 					return true;
 				}
 			}
+			
+			public void carUpdate() {
+				
+			}
 		});
 
 		panel.add(label);
@@ -157,6 +165,7 @@ public class Testing extends JFrame{
 	}
 	
 	/**
+	 * main method
 	 * @param args
 	 */
 	public static void main(String[] args) {
