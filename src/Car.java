@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -17,6 +18,7 @@ public class Car {
 	private int w, h;
 	public JLabel img_c;
 	private int x_r, y_r; // pos
+	private ArrayList<TimeProgress> arr;
 
 	public JLabel img_r;
 	private int vx = 2; // velocity
@@ -69,20 +71,46 @@ public class Car {
 		}
 		img_c.setBounds(x_c, y_c, w, h);
 	}
-
-	public ArrayList<Double> moveRec(File record) {
-		ArrayList<Double> arr = new ArrayList<Double>();
+	/**
+	 * moves car across the screen by vx call this to update position
+	 * @param File record of past percentWords
+	 */
+	public void readRec(File record) {
+		ArrayList<TimeProgress> arr = new ArrayList<TimeProgress>();
 
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(record));
 			String line;
-			while ((line = in.readLine()) != null)
-				arr.add(Double.parseDouble(line));
+			in.readLine();
+			while ((line = in.readLine()) != null) {
+				StringTokenizer st = new StringTokenizer(line);
+				arr.add(new TimeProgress(Double.parseDouble(st.nextToken()), Double.parseDouble(st.nextToken())));
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		this.arr = arr;
+	}
+	
+	/**
+	 * moves car across the screen by vx call this to update position
+	 */
+	public void moveRec(double elapsed) {
+		TimeProgress last = new TimeProgress(0, 0);
+		for(TimeProgress tp : arr) {
+			if(tp.timeElapsed > elapsed)
+				break;
+			last = tp;
+		}
 		
-		return arr;
+		double percentWord = last.percentCompletion;
+		while (x_r < percentWord * (screen_width)) {
+			x_r += vx;
+		}
+		if (x_r >= screen_width - w) {
+			System.out.println("reached finish line"); // update when classes are complete
+		}
+		img_r.setBounds(x_r, y_r, w, h);
 	}
 
 	/**

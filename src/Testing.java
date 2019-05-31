@@ -2,13 +2,15 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -25,7 +27,18 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+class TimeProgress {
+	double timeElapsed;
+	double percentCompletion;
+
+	public TimeProgress(double timeElapsed, double percentCompletion) {
+		this.percentCompletion = percentCompletion;
+		this.timeElapsed = timeElapsed;
+	}
+}
+
 public class Testing extends JFrame {
+
 	/**
 	 * This is where the text is collected and compared to the contents of textArea.
 	 */
@@ -42,6 +55,7 @@ public class Testing extends JFrame {
 	 * number of words typed
 	 */
 	int words = 0;
+	int wpm;
 	int totalWords = 0;
 	/**
 	 * Program start time
@@ -50,8 +64,8 @@ public class Testing extends JFrame {
 	/**
 	 * 
 	 */
-	double percentWord;
-	ArrayList<Double> arr;
+	double percentileWord;
+	ArrayList<TimeProgress> arr = new ArrayList<TimeProgress>();
 	JButton button1;
 	/**
 	 * 
@@ -127,7 +141,7 @@ public class Testing extends JFrame {
 		textArea.setEditable(false);
 		textArea.setFocusable(false);
 		textArea.setWrapStyleWord(true); // make words cut off by the whole word
-		totalWords = (new StringTokenizer(textField.getText())).countTokens();
+		totalWords = (new StringTokenizer(textArea.getText())).countTokens();
 
 		textField = new JTextField(22); // 22 columns wide
 		textField.setFont(typeFont); // player types in this
@@ -151,11 +165,16 @@ public class Testing extends JFrame {
 					words = (new StringTokenizer(textField.getText())).countTokens(); // count number of words if new
 																						// word is typed (count words to
 																						// reduce cheating)
-					percentWord = words / totalWords;
-					arr.add(percentWord);
+					percentileWord = ((double) words) / ((double)totalWords);
+					arr.add(new TimeProgress(System.currentTimeMillis() - startTime, percentileWord));
 				}
-				label.setText("WPM: "
-						+ (int) (((double) words * 60000.0) / ((double) (System.currentTimeMillis() - startTime))));
+				System.out.println(percentileWord);
+
+				wpm = (int) (((double) words * 60000.0) / ((double) (System.currentTimeMillis() - startTime)));
+				label.setText("WPM: " + wpm);
+
+				if (textField.getText().equals(textArea.getText()))
+					writeRecord();
 			}
 
 			public boolean update() {
@@ -178,6 +197,22 @@ public class Testing extends JFrame {
 		return panel;
 	}
 
+	public void writeRecord() {
+		try {
+			BufferedReader f = new BufferedReader(new FileReader("prev_record"));
+			// input file name goes above
+
+			if (Integer.parseInt(f.readLine()) < wpm) {
+				PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("prev_record")));
+				out.println(wpm);
+				for (TimeProgress tp : arr)
+					out.println(tp.timeElapsed + " " + tp.percentCompletion);
+				out.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	// testing below
 
 	public void newCar() {
