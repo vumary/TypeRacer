@@ -56,6 +56,7 @@ public class Testing extends JFrame {
 	 */
 	int words = 0;
 	int wpm;
+	int rec;
 	int totalWords = 0;
 	/**
 	 * Program start time
@@ -173,8 +174,11 @@ public class Testing extends JFrame {
 				wpm = (int) (((double) words * 60000.0) / ((double) (System.currentTimeMillis() - startTime)));
 				label.setText("WPM: " + wpm);
 
-				if (textField.getText().equals(textArea.getText()))
+				if (textField.getText().equals(textArea.getText())) {
 					writeRecord();
+					gameOver();
+				}
+					
 			}
 
 			public boolean update() {
@@ -223,20 +227,18 @@ public class Testing extends JFrame {
 			cars2.add(newCar);
 		}
 	}
-	public JPanel gameOver() {
-		String bg = "bg_800_400.png";
+	public void gameOver() {
+		
+		try {
+			BufferedReader f = new BufferedReader(new FileReader("prev_record"));
+			// input file name goes above
 
-		panel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // new flow layout to hold text field
-		panel.setSize(800, 400);
-		panel.setBackground(new Color(144, 198, 111)); // set background to match lane border
-
-		String src = new File("").getAbsolutePath() + "/src/"; // path to image setup
-		ImageIcon backg = new ImageIcon(src + bg); // setups icon image
-		JLabel background = new JLabel(backg);
-		background.setBounds(0, 0, 800, 400); // set location and size of icon
-		panel.add(background);
-
-		return panel;
+			rec = Integer.parseInt(f.readLine());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		label.setText("Game Over. WPM: " + wpm + ". High Record: " + rec +".");
 
 	}
 	public JPanel raceTrack() {

@@ -38,7 +38,7 @@ public class Car {
 		// lane = which lane the car is
 		String src = new File("").getAbsolutePath() + "/src/";
 		ImageIcon ghost = new ImageIcon(src + filename);
-		img_c = new JLabel(ghost); // conect img ot this objects img field
+		img_c = new JLabel(ghost); // conect img to this objects img field
 
 		// bound img to object
 		h = ghost.getIconHeight();
