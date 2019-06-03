@@ -21,7 +21,7 @@ public class Car {
 	private ArrayList<TimeProgress> arr;
 
 	public JLabel img_r;
-	private int vx = 2; // velocity
+	private int vx = 3; // velocity
 	private int WPM;
 
 	// screen settings
@@ -63,7 +63,7 @@ public class Car {
 	 * moves car across the screen by vx call this to update position
 	 */
 	public void moveCur(double percentWord) {
-		while (x_c < percentWord * (screen_width)) {
+		if (x_c < percentWord * (screen_width)) {
 			x_c += vx;
 		}
 		if (x_c >= screen_width - w) {

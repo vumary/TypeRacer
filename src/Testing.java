@@ -2,14 +2,14 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -65,6 +66,8 @@ public class Testing extends JFrame {
 	/**
 	 * 
 	 */
+
+	Timer timer;
 	double percentileWord;
 	ArrayList<TimeProgress> arr = new ArrayList<TimeProgress>();
 	JButton button1;
@@ -115,7 +118,23 @@ public class Testing extends JFrame {
 		frame.getContentPane().add(typingField());
 
 		frame.setVisible(true);
+		refreshScreen();
 
+	}
+
+	public void refreshScreen() {
+		timer = new Timer(0, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				for (Car c : cars2) {
+					c.moveCur(percentileWord);
+				}
+			}
+		});
+		timer.setRepeats(true);
+		// Aprox. 60 FPS
+		timer.setDelay(17);
+		timer.start();
 	}
 
 	/**
@@ -166,7 +185,8 @@ public class Testing extends JFrame {
 					words = (new StringTokenizer(textField.getText())).countTokens(); // count number of words if new
 																						// word is typed (count words to
 																						// reduce cheating)
-					percentileWord = ((double) words) / ((double)totalWords);
+					percentileWord = ((double) words) / ((double) totalWords);
+
 					arr.add(new TimeProgress(System.currentTimeMillis() - startTime, percentileWord));
 				}
 				System.out.println(percentileWord);
@@ -227,6 +247,7 @@ public class Testing extends JFrame {
 			cars2.add(newCar);
 		}
 	}
+
 	public void gameOver() {
 		
 		try {
@@ -241,11 +262,12 @@ public class Testing extends JFrame {
 		label.setText("Game Over. WPM: " + wpm + ". High Record: " + rec +".");
 
 	}
+
 	public JPanel raceTrack() {
 
 		String bg = "bg_800_400.png";
 
-		panel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // new flow layout to hold text field
+		panel = new JPanel(null); // new flow layout to hold text field
 		panel.setSize(800, 400);
 		panel.setBackground(new Color(144, 198, 111)); // set background to match lane border
 
@@ -259,6 +281,7 @@ public class Testing extends JFrame {
 		for (int j = 0; j < cars2.size(); j++) {
 			// display
 			panel.add(cars2.get(j).img_c);
+			// cars2.get(j).img
 		}
 
 		panel.add(background);
