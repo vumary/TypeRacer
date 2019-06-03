@@ -2,6 +2,8 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -21,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -62,6 +65,8 @@ public class Testing extends JFrame {
 	/**
 	 * 
 	 */
+
+	Timer timer;
 	double percentileWord;
 	ArrayList<TimeProgress> arr = new ArrayList<TimeProgress>();
 	JButton button1;
@@ -112,7 +117,23 @@ public class Testing extends JFrame {
 		frame.getContentPane().add(typingField());
 
 		frame.setVisible(true);
+		refreshScreen();
 
+	}
+
+	public void refreshScreen() {
+		timer = new Timer(0, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				for (Car c : cars2) {
+					c.moveCur(percentileWord);
+				}
+			}
+		});
+		timer.setRepeats(true);
+		// Aprox. 60 FPS
+		timer.setDelay(17);
+		timer.start();
 	}
 
 	/**
@@ -163,16 +184,12 @@ public class Testing extends JFrame {
 					words = (new StringTokenizer(textField.getText())).countTokens(); // count number of words if new
 																						// word is typed (count words to
 																						// reduce cheating)
-					percentileWord = ((double) words) / ((double)totalWords);
-					
+					percentileWord = ((double) words) / ((double) totalWords);
+
 					arr.add(new TimeProgress(System.currentTimeMillis() - startTime, percentileWord));
 				}
 				System.out.println(percentileWord);
-				
-				for(Car c : cars2) {
-					c.moveCur(percentileWord);
-				}
-				
+
 				wpm = (int) (((double) words * 60000.0) / ((double) (System.currentTimeMillis() - startTime)));
 				label.setText("WPM: " + wpm);
 
@@ -226,6 +243,7 @@ public class Testing extends JFrame {
 			cars2.add(newCar);
 		}
 	}
+
 	public JPanel gameOver() {
 		String bg = "bg_800_400.png";
 
@@ -242,6 +260,7 @@ public class Testing extends JFrame {
 		return panel;
 
 	}
+
 	public JPanel raceTrack() {
 
 		String bg = "bg_800_400.png";
@@ -260,7 +279,7 @@ public class Testing extends JFrame {
 		for (int j = 0; j < cars2.size(); j++) {
 			// display
 			panel.add(cars2.get(j).img_c);
-			//cars2.get(j).img
+			// cars2.get(j).img
 		}
 
 		panel.add(background);
