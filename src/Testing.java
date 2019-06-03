@@ -5,11 +5,9 @@ import java.awt.GridLayout;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -166,10 +164,15 @@ public class Testing extends JFrame {
 																						// word is typed (count words to
 																						// reduce cheating)
 					percentileWord = ((double) words) / ((double)totalWords);
+					
 					arr.add(new TimeProgress(System.currentTimeMillis() - startTime, percentileWord));
 				}
 				System.out.println(percentileWord);
-
+				
+				for(Car c : cars2) {
+					c.moveCur(percentileWord);
+				}
+				
 				wpm = (int) (((double) words * 60000.0) / ((double) (System.currentTimeMillis() - startTime)));
 				label.setText("WPM: " + wpm);
 
@@ -243,7 +246,7 @@ public class Testing extends JFrame {
 
 		String bg = "bg_800_400.png";
 
-		panel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // new flow layout to hold text field
+		panel = new JPanel(null); // new flow layout to hold text field
 		panel.setSize(800, 400);
 		panel.setBackground(new Color(144, 198, 111)); // set background to match lane border
 
@@ -257,6 +260,7 @@ public class Testing extends JFrame {
 		for (int j = 0; j < cars2.size(); j++) {
 			// display
 			panel.add(cars2.get(j).img_c);
+			//cars2.get(j).img
 		}
 
 		panel.add(background);
