@@ -27,6 +27,10 @@ import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
+import javax.swing.text.Highlighter.HighlightPainter;
 
 class TimeProgress {
 	double timeElapsed;
@@ -145,14 +149,26 @@ public class Testing extends JFrame {
 	 */
 	public JPanel typingField() {
 		panel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // new flow layout to hold text field
-
+		
+		
+	
+		
 		// textField.setFont(textField.getFont().deriveFont(50f)); //set font
 		Font typeFont = new Font("Comic Sans MS", Font.BOLD, 40);
 		Font textFont = new Font("Courier", Font.PLAIN, 32);
 
 		label = new JLabel("WPM: ", SwingConstants.CENTER);
 
-		JTextArea textArea = new JTextArea(dictionary.getSentence(), 8, 40);
+		JTextArea textArea = new JTextArea(8, 40);
+		textArea.setText(dictionary.getSentence());
+		
+		//testing below
+		
+		Highlighter highlighter = textArea.getHighlighter();
+		HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.green);
+		
+		//testing above
+		
 
 		textArea.setBorder(typeBorder);
 		textArea.setLineWrap(true);
@@ -206,6 +222,13 @@ public class Testing extends JFrame {
 					textField.setBorder(badBorder);
 					return false;
 				} else {
+					try {
+						highlighter.addHighlight(0, textField.getText().length(), painter);
+					} catch (BadLocationException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
 					textField.setBorder(goodBorder);
 					return true;
 				}
