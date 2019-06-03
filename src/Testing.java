@@ -223,7 +223,22 @@ public class Testing extends JFrame {
 			cars2.add(newCar);
 		}
 	}
+	public JPanel gameOver() {
+		String bg = "bg_800_400.png";
 
+		panel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // new flow layout to hold text field
+		panel.setSize(800, 400);
+		panel.setBackground(new Color(144, 198, 111)); // set background to match lane border
+
+		String src = new File("").getAbsolutePath() + "/src/"; // path to image setup
+		ImageIcon backg = new ImageIcon(src + bg); // setups icon image
+		JLabel background = new JLabel(backg);
+		background.setBounds(0, 0, 800, 400); // set location and size of icon
+		panel.add(background);
+
+		return panel;
+
+	}
 	public JPanel raceTrack() {
 
 		String bg = "bg_800_400.png";
