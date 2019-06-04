@@ -12,7 +12,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.StringTokenizer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -28,6 +32,19 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+//class TimedExit {
+//Timer timer = new Timer(0, null);
+//TimerTask exitApp = new TimerTask() {
+//public void run() {
+//    System.exit(0);
+//    }
+//};
+//
+//public TimedExit() {
+//timer.schedule(exitApp, new Date(System.currentTimeMillis()+5*1000));
+//    }
+//
+//}
 class TimeProgress {
 	double timeElapsed;
 	double percentCompletion;
@@ -69,7 +86,7 @@ public class Testing extends JFrame {
 
 	Timer timer;
 	double percentileWord;
-	ArrayList<TimeProgress> arr = new ArrayList<TimeProgress>();
+	ArrayList<TimeProgress> prevRecord = new ArrayList<TimeProgress>();
 	JButton button1;
 	/**
 	 * 
@@ -119,6 +136,7 @@ public class Testing extends JFrame {
 
 		frame.setVisible(true);
 		refreshScreen();
+		readRec(new File("prev_record"));
 
 	}
 
@@ -126,9 +144,8 @@ public class Testing extends JFrame {
 		timer = new Timer(0, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				for (Car c : cars2) {
-					c.moveCur(percentileWord);
-				}
+				cars2.get(0).moveCur(percentileWord);
+				cars2.get(1).moveRec(prevRecord, System.currentTimeMillis() - startTime);				
 			}
 		});
 		timer.setRepeats(true);
@@ -187,7 +204,7 @@ public class Testing extends JFrame {
 																						// reduce cheating)
 					percentileWord = ((double) words) / ((double) totalWords);
 
-					arr.add(new TimeProgress(System.currentTimeMillis() - startTime, percentileWord));
+					prevRecord.add(new TimeProgress(System.currentTimeMillis() - startTime, percentileWord));
 				}
 				System.out.println(percentileWord);
 
@@ -198,7 +215,7 @@ public class Testing extends JFrame {
 					writeRecord();
 					gameOver();
 				}
-					
+
 			}
 
 			public boolean update() {
@@ -229,7 +246,7 @@ public class Testing extends JFrame {
 			if (Integer.parseInt(f.readLine()) < wpm) {
 				PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("prev_record")));
 				out.println(wpm);
-				for (TimeProgress tp : arr)
+				for (TimeProgress tp : prevRecord)
 					out.println(tp.timeElapsed + " " + tp.percentCompletion);
 				out.close();
 			}
@@ -249,7 +266,7 @@ public class Testing extends JFrame {
 	}
 
 	public void gameOver() {
-		
+
 		try {
 			BufferedReader f = new BufferedReader(new FileReader("prev_record"));
 			// input file name goes above
@@ -258,8 +275,9 @@ public class Testing extends JFrame {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		label.setText("Game Over. WPM: " + wpm + ". High Record: " + rec +".");
+
+		label.setText("Game Over. WPM: " + wpm + ". High Record: " + rec + ".");
+		Executors.newSingleThreadScheduledExecutor().schedule(() -> System.exit(0), 5, TimeUnit.SECONDS);
 
 	}
 
@@ -288,7 +306,27 @@ public class Testing extends JFrame {
 
 		return panel;
 	}
+	
+	/**
+	 * moves car across the screen by vx call this to update position
+	 * @param File record of past percentWords
+	 */
+	public void readRec(File record) {
+		ArrayList<TimeProgress> arr = new ArrayList<TimeProgress>();
 
+		try {
+			BufferedReader in = new BufferedReader(new FileReader(record));
+			String line;
+			in.readLine();
+			while ((line = in.readLine()) != null) {
+				StringTokenizer st = new StringTokenizer(line);
+				arr.add(new TimeProgress(Double.parseDouble(st.nextToken()), Double.parseDouble(st.nextToken())));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		this.prevRecord = arr;
+	}
 	// testing above
 
 	/**
