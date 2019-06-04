@@ -63,7 +63,7 @@ public class Car {
 			x_c += vx;
 		}
 		if (x_c >= screen_width - w) {
-			System.out.println("reached finish line"); // update when classes are complete
+			//System.out.println("reached finish line"); // update when classes are complete
 		}
 		img_c.setBounds(x_c, y_c, w, h);
 	}

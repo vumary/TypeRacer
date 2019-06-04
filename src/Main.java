@@ -12,12 +12,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.StringTokenizer;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -36,19 +33,10 @@ import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
 import javax.swing.text.Highlighter.HighlightPainter;
 
-//class TimedExit {
-//Timer timer = new Timer(0, null);
-//TimerTask exitApp = new TimerTask() {
-//public void run() {
-//    System.exit(0);
-//    }
-//};
-//
-//public TimedExit() {
-//timer.schedule(exitApp, new Date(System.currentTimeMillis()+5*1000));
-//    }
-//
-//}
+/**
+ * @author Anushree Chaudhuri
+ *
+ */
 class TimeProgress {
 	double timeElapsed;
 	double percentCompletion;
@@ -59,7 +47,7 @@ class TimeProgress {
 	}
 }
 
-public class Testing extends JFrame {
+public class Main extends JFrame {
 
 	/**
 	 * This is where the text is collected and compared to the contents of textArea.
@@ -77,20 +65,37 @@ public class Testing extends JFrame {
 	 * number of words typed
 	 */
 	int words = 0;
+	/**
+	 * words per minute current
+	 */
 	int wpm;
+	/**
+	 * record high words per minute
+	 */
 	int rec;
+	/**
+	 * total words in sentence
+	 */
 	int totalWords = 0;
 	/**
 	 * Program start time
 	 */
 	double startTime;
 	/**
-	 * 
+	 * Timer
 	 */
-
 	Timer timer;
+	/**
+	 * percent of total words completed
+	 */
 	double percentileWord;
+	/**
+	 * all previous time progresses at every instant (time and percent completed) to make competing race 
+	 */
 	ArrayList<TimeProgress> prevRecord = new ArrayList<TimeProgress>();
+	/**
+	 * buttons for display
+	 */
 	JButton button1;
 	/**
 	 * 
@@ -113,6 +118,9 @@ public class Testing extends JFrame {
 	 * mismatches which are not null --> badBorder
 	 */
 	Dictionary dictionary = new Dictionary();
+	/**
+	 * array list of cars for moving races
+	 */
 	ArrayList<Car> cars2 = new ArrayList<Car>(); // list of cars
 
 	/**
@@ -120,7 +128,7 @@ public class Testing extends JFrame {
 	 * be placed. Start time begins here (for now). Typing field is added so it is
 	 * an interactive JFrame.
 	 */
-	public Testing() {
+	public Main() {
 
 		JFrame frame = new JFrame("TypeRacer");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -144,12 +152,15 @@ public class Testing extends JFrame {
 
 	}
 
+	/**
+	 * continuous update method for car movement
+	 */
 	public void refreshScreen() {
 		timer = new Timer(0, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cars2.get(0).moveCur(percentileWord);
-				cars2.get(1).moveRec(prevRecord, System.currentTimeMillis() - startTime);				
+				cars2.get(1).moveRec(prevRecord, System.currentTimeMillis() - startTime);
 			}
 		});
 		timer.setRepeats(true);
@@ -166,10 +177,7 @@ public class Testing extends JFrame {
 	 */
 	public JPanel typingField() {
 		panel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // new flow layout to hold text field
-		
-		
-	
-		
+
 		// textField.setFont(textField.getFont().deriveFont(50f)); //set font
 		Font typeFont = new Font("Comic Sans MS", Font.BOLD, 40);
 		Font textFont = new Font("Courier", Font.PLAIN, 32);
@@ -178,14 +186,13 @@ public class Testing extends JFrame {
 
 		JTextArea textArea = new JTextArea(8, 40);
 		textArea.setText(dictionary.getSentence());
-		
-		//testing below
-		
+
+		// testing below
+
 		Highlighter highlighter = textArea.getHighlighter();
 		HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.green);
-		
-		//testing above
-		
+
+		// testing above
 
 		textArea.setBorder(typeBorder);
 		textArea.setLineWrap(true);
@@ -201,7 +208,15 @@ public class Testing extends JFrame {
 		// create a line border with the specified color and width
 		// set the border of this component
 		textField.setBorder(goodBorder);
-		textField.getDocument().addDocumentListener(new DocumentListener() {
+		textField.getDocument().addDocumentListener(/**
+		 * @author Anushree Chaudhuri
+		 *
+		 */
+		/**
+		 * @author Anushree Chaudhuri
+		 *
+		 */
+		new DocumentListener() {
 
 			public void changedUpdate(DocumentEvent e) {
 				update();
@@ -245,7 +260,7 @@ public class Testing extends JFrame {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					
+
 					textField.setBorder(goodBorder);
 					return true;
 				}
@@ -261,6 +276,9 @@ public class Testing extends JFrame {
 		return panel;
 	}
 
+	/**
+	 * save the high record arraylist to a text file
+	 */
 	public void writeRecord() {
 		try {
 			BufferedReader f = new BufferedReader(new FileReader("prev_record"));
@@ -279,6 +297,9 @@ public class Testing extends JFrame {
 	}
 	// testing below
 
+	/**
+	 * create a car object for arraylist
+	 */
 	public void newCar() {
 		// creates as many cars in one line as needed
 		for (int i = 0; i < 4; i++) {
@@ -288,6 +309,9 @@ public class Testing extends JFrame {
 		}
 	}
 
+	/**
+	 * displays final wpm and compares to high record. terminates program after 5 seconds.
+	 */
 	public void gameOver() {
 
 		try {
@@ -304,6 +328,10 @@ public class Testing extends JFrame {
 
 	}
 
+	/**
+	 * creates the racetrack and displays images on top of the JPanel to make the cars move and stuff
+	 * @return
+	 */
 	public JPanel raceTrack() {
 
 		String bg = "bg_800_400.png";
@@ -329,9 +357,10 @@ public class Testing extends JFrame {
 
 		return panel;
 	}
-	
+
 	/**
 	 * moves car across the screen by vx call this to update position
+	 * 
 	 * @param File record of past percentWords
 	 */
 	public void readRec(File record) {
@@ -359,7 +388,7 @@ public class Testing extends JFrame {
 	 */
 	public static void main(String[] args) {
 		// GUIS should be constructed on the EDT.
-		JFrame tt = new Testing();
+		JFrame tt = new Main();
 	}
 
 }
