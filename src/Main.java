@@ -208,10 +208,7 @@ public class Main extends JFrame {
 		// create a line border with the specified color and width
 		// set the border of this component
 		textField.setBorder(goodBorder);
-		textField.getDocument().addDocumentListener(/**
-		 * @author Anushree Chaudhuri
-		 *
-		 */
+		textField.getDocument().addDocumentListener(
 		/**
 		 * @author Anushree Chaudhuri
 		 *
@@ -237,7 +234,7 @@ public class Main extends JFrame {
 
 					prevRecord.add(new TimeProgress(System.currentTimeMillis() - startTime, percentileWord));
 				}
-				System.out.println(percentileWord);
+				//System.out.println(percentileWord);
 
 				wpm = (int) (((double) words * 60000.0) / ((double) (System.currentTimeMillis() - startTime)));
 				label.setText("WPM: " + wpm);
@@ -288,7 +285,7 @@ public class Main extends JFrame {
 				PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("prev_record")));
 				out.println(wpm);
 				for (TimeProgress tp : prevRecord)
-					out.println(tp.timeElapsed + " " + tp.percentCompletion);
+					//out.println(tp.timeElapsed + " " + tp.percentCompletion);
 				out.close();
 			}
 		} catch (IOException e) {

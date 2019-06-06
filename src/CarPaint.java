@@ -27,6 +27,8 @@ import javax.swing.Timer;
  * wip class for creating a road and cars
  * should ultimately make a jpanel that can be added to Testing class
  */
+
+
 public class CarPaint extends JPanel implements ActionListener {
 
 	int screen_width = 800;
