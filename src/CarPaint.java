@@ -101,7 +101,7 @@ public class CarPaint extends JPanel implements ActionListener {
 	public CarPaint(){
 
 		JFrame f = new JFrame();
-		f.setTitle("CARPAINt");
+		f.setTitle("CARPAINT");
 		f.setSize(screen_width, screen_size);
 		
 		

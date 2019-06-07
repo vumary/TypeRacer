@@ -223,16 +223,17 @@ public class Main extends JFrame {
 			public void removeUpdate(DocumentEvent e) {
 				update();
 			}
-
+			//decide when to update WPM (when new word is typed)
+			
 			public void insertUpdate(DocumentEvent e) {
 				boolean good = update();
 				if (good && textField.getText().endsWith(" ")) {
 					words = (new StringTokenizer(textField.getText())).countTokens(); // count number of words if new
 																						// word is typed (count words to
 																						// reduce cheating)
-					percentileWord = ((double) words) / ((double) totalWords);
+					percentileWord = ((double) words) / ((double) totalWords); //calculate percent of total words typed
 
-					prevRecord.add(new TimeProgress(System.currentTimeMillis() - startTime, percentileWord));
+					prevRecord.add(new TimeProgress(System.currentTimeMillis() - startTime, percentileWord)); //add to array list to store values and write to file
 				}
 				//System.out.println(percentileWord);
 
@@ -285,7 +286,7 @@ public class Main extends JFrame {
 				PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("prev_record")));
 				out.println(wpm);
 				for (TimeProgress tp : prevRecord)
-					//out.println(tp.timeElapsed + " " + tp.percentCompletion);
+				out.println(tp.timeElapsed + " " + tp.percentCompletion);
 				out.close();
 			}
 		} catch (IOException e) {
