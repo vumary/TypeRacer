@@ -1,9 +1,11 @@
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,18 +15,22 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
+import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -32,6 +38,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
 import javax.swing.text.Highlighter.HighlightPainter;
+
+import org.omg.CORBA.portable.InputStream;
 
 /**
  * @author Anushree Chaudhuri
@@ -90,7 +98,8 @@ public class Main extends JFrame {
 	 */
 	double percentileWord;
 	/**
-	 * all previous time progresses at every instant (time and percent completed) to make competing race 
+	 * all previous time progresses at every instant (time and percent completed) to
+	 * make competing race
 	 */
 	ArrayList<TimeProgress> prevRecord = new ArrayList<TimeProgress>();
 	/**
@@ -124,29 +133,34 @@ public class Main extends JFrame {
 	ArrayList<Car> cars2 = new ArrayList<Car>(); // list of cars
 
 	/**
+	 * the background music
+	 */
+	static Clip clip;
+
+	/**
 	 * constructor Initializes the frame on top of which panel and all fields will
 	 * be placed. Start time begins here (for now). Typing field is added so it is
 	 * an interactive JFrame.
 	 */
+
 	public Main() {
 
-		JFrame frame = new JFrame("TypeRacer");
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setSize(800, 1000);
-		frame.setResizable(false);
-		frame.setLayout(new GridLayout(2, 1));
+		this.setTitle("TypeRacer");
+		this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		this.setSize(800, 1000);
+		this.setResizable(false);
+		this.setLayout(new GridLayout(2, 1));
 
 		startTime = System.currentTimeMillis();// we should start counting only as soon as person starts typing??? TEST
 
 		// testing below
 
-		frame.getContentPane().add(raceTrack());
+		this.getContentPane().add(raceTrack());
 
 		// testing above
 
-		frame.getContentPane().add(typingField());
-
-		frame.setVisible(true);
+		this.getContentPane().add(typingField());
+		this.setVisible(true);
 		refreshScreen();
 		readRec(new File("prev_record"));
 
@@ -209,63 +223,74 @@ public class Main extends JFrame {
 		// set the border of this component
 		textField.setBorder(goodBorder);
 		textField.getDocument().addDocumentListener(
-		/**
-		 * @author Anushree Chaudhuri
-		 *
-		 */
-		new DocumentListener() {
+				/**
+				 * @author Anushree Chaudhuri
+				 *
+				 */
+				new DocumentListener() {
 
-			public void changedUpdate(DocumentEvent e) {
-				update();
+					public void changedUpdate(DocumentEvent e) {
+						update();
 
-			}
-
-			public void removeUpdate(DocumentEvent e) {
-				update();
-			}
-			//decide when to update WPM (when new word is typed)
-			
-			public void insertUpdate(DocumentEvent e) {
-				boolean good = update();
-				if (good && textField.getText().endsWith(" ")) {
-					words = (new StringTokenizer(textField.getText())).countTokens(); // count number of words if new
-																						// word is typed (count words to
-																						// reduce cheating)
-					percentileWord = ((double) words) / ((double) totalWords); //calculate percent of total words typed
-
-					prevRecord.add(new TimeProgress(System.currentTimeMillis() - startTime, percentileWord)); //add to array list to store values and write to file
-				}
-				//System.out.println(percentileWord);
-
-				wpm = (int) (((double) words * 60000.0) / ((double) (System.currentTimeMillis() - startTime)));
-				label.setText("WPM: " + wpm);
-
-				if (textField.getText().equals(textArea.getText())) {
-					writeRecord();
-					gameOver();
-				}
-
-			}
-
-			public boolean update() {
-				if (!textArea.getText().startsWith(textField.getText())) {
-					textField.setBorder(badBorder);
-					return false;
-				} else {
-					try {
-						highlighter.addHighlight(0, textField.getText().length(), painter);
-					} catch (BadLocationException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
 					}
 
-					textField.setBorder(goodBorder);
-					return true;
-				}
-			}
+					public void removeUpdate(DocumentEvent e) {
+						update();
+					}
+					// decide when to update WPM (when new word is typed)
 
-		});
+					public void insertUpdate(DocumentEvent e) {
+						boolean good = update();
+						if (good && textField.getText().endsWith(" ")) {
+							words = (new StringTokenizer(textField.getText())).countTokens(); // count number of words
+																								// if new
+																								// word is typed (count
+																								// words to
+																								// reduce cheating)
+							percentileWord = ((double) words) / ((double) totalWords); // calculate percent of total
+																						// words typed
 
+							prevRecord.add(new TimeProgress(System.currentTimeMillis() - startTime, percentileWord)); // add
+																														// to
+																														// array
+																														// list
+																														// to
+																														// store
+																														// values
+																														// and
+																														// write
+																														// to
+																														// file
+						}
+
+						wpm = (int) (((double) words * 60000.0) / ((double) (System.currentTimeMillis() - startTime)));
+						label.setText("WPM: " + wpm);
+
+						if (textField.getText().equals(textArea.getText())) {
+							writeRecord();
+							gameOver();
+						}
+
+					}
+
+					public boolean update() {
+						if (!textArea.getText().startsWith(textField.getText())) {
+							textField.setBorder(badBorder);
+							return false;
+						} else {
+							try {
+								highlighter.addHighlight(0, textField.getText().length(), painter);
+							} catch (BadLocationException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+
+							textField.setBorder(goodBorder);
+							return true;
+						}
+					}
+
+				});
 		panel.add(label);
 		panel.add(textField); // set listener here
 		panel.add(textArea);
@@ -288,6 +313,7 @@ public class Main extends JFrame {
 				for (TimeProgress tp : prevRecord)
 				out.println(tp.timeElapsed + " " + tp.percentCompletion);
 				out.close();
+
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -308,7 +334,8 @@ public class Main extends JFrame {
 	}
 
 	/**
-	 * displays final wpm and compares to high record. terminates program after 5 seconds.
+	 * displays final wpm and compares to high record. terminates program after 5
+	 * seconds.
 	 */
 	public void gameOver() {
 
@@ -322,12 +349,28 @@ public class Main extends JFrame {
 		}
 
 		label.setText("Game Over. WPM: " + wpm + ". High Record: " + rec + ".");
-		Executors.newSingleThreadScheduledExecutor().schedule(() -> System.exit(0), 5, TimeUnit.SECONDS);
 
+		int option = (JOptionPane.showOptionDialog(null, "Game Over. WPM: " + wpm + ". High Record: " + rec + ".",
+				"Game Over", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
+				new String[] { "New Game", "Exit" }, null));
+
+		if (option == 0) {
+			buttonSound();
+			this.dispose();
+			this.setVisible(false);
+			this.setSize(0, 0);
+
+			new Main();
+		} else if (option == 1) {
+			buttonSound();
+			System.exit(-1);
+		}
 	}
 
 	/**
-	 * creates the racetrack and displays images on top of the JPanel to make the cars move and stuff
+	 * creates the racetrack and displays images on top of the JPanel to make the
+	 * cars move and stuff
+	 * 
 	 * @return
 	 */
 	public JPanel raceTrack() {
@@ -380,6 +423,50 @@ public class Main extends JFrame {
 	// testing above
 
 	/**
+	 * @param filepath - music filepath plays some bgm :)) there are three songs
+	 *                 that loop
+	 */
+	public static void playMusic(String filepath) {
+
+		try {
+
+			File file = new File((filepath));
+			AudioInputStream stream = AudioSystem.getAudioInputStream(file);
+			clip = AudioSystem.getClip();
+			clip.open(stream);
+			clip.start();
+			clip.loop(Clip.LOOP_CONTINUOUSLY);
+			// sleep to allow enough time for the clip to play
+			Thread.sleep(8102000);
+
+			stream.close();
+
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+
+	}
+
+	public static void buttonSound() {
+		try {
+
+			File file = new File(("button.wav"));
+			AudioInputStream stream = AudioSystem.getAudioInputStream(file);
+			Clip clip = AudioSystem.getClip();
+			clip.open(stream);
+			clip.start();
+
+			// sleep to allow enough time for the clip to play
+			// Thread.sleep(500);
+
+			stream.close();
+
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
+
+	/**
 	 * main method
 	 * 
 	 * @param args
@@ -387,6 +474,8 @@ public class Main extends JFrame {
 	public static void main(String[] args) {
 		// GUIS should be constructed on the EDT.
 		JFrame tt = new Main();
+		playMusic("theme.wav"); // bgm
+
 	}
 
 }
