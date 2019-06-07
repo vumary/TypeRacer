@@ -16,6 +16,9 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -35,6 +38,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
 import javax.swing.text.Highlighter.HighlightPainter;
+
+import org.omg.CORBA.portable.InputStream;
 
 /**
  * @author Anushree Chaudhuri
@@ -128,33 +133,43 @@ public class Main extends JFrame {
 	ArrayList<Car> cars2 = new ArrayList<Car>(); // list of cars
 
 	/**
+	 * the background music
+	 */
+	static Clip clip;
+
+	
+	/**
 	 * constructor Initializes the frame on top of which panel and all fields will
 	 * be placed. Start time begins here (for now). Typing field is added so it is
 	 * an interactive JFrame.
 	 */
+	
+	
 	public Main() {
+		
 
-		JFrame frame = new JFrame("TypeRacer");
-		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		frame.setSize(800, 1000);
-		frame.setResizable(false);
-		frame.setLayout(new GridLayout(2, 1));
+		this.setTitle("TypeRacer");
+		this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		this.setSize(800, 1000);
+		this.setResizable(false);
+		this.setLayout(new GridLayout(2, 1));
 
 		startTime = System.currentTimeMillis();// we should start counting only as soon as person starts typing??? TEST
 
 		// testing below
 
-		frame.getContentPane().add(raceTrack());
+		this.getContentPane().add(raceTrack());
 
 		// testing above
 
-		frame.getContentPane().add(typingField());
-		frame.setVisible(true);
+		this.getContentPane().add(typingField());
+		this.setVisible(true);
 		refreshScreen();
 		readRec(new File("prev_record"));
 
 	}
 
+	
 	/**
 	 * continuous update method for car movement
 	 */
@@ -231,10 +246,10 @@ public class Main extends JFrame {
 						boolean good = update();
 						if (good && textField.getText().endsWith(" ")) {
 							words = (new StringTokenizer(textField.getText())).countTokens(); // count number of words
-																								// if new
-																								// word is typed (count
-																								// words to
-																								// reduce cheating)
+							// if new
+							// word is typed (count
+							// words to
+							// reduce cheating)
 							percentileWord = ((double) words) / ((double) totalWords);
 
 							prevRecord.add(new TimeProgress(System.currentTimeMillis() - startTime, percentileWord));
@@ -332,12 +347,14 @@ public class Main extends JFrame {
 				new String[] { "New Game", "Exit" }, null));
 
 		if (option == 0) {
+			buttonSound();
 			this.dispose();
 			this.setVisible(false);
 			this.setSize(0,0);
-			
+
 			new Main();
 		} else if (option == 1) {
+			buttonSound();
 			System.exit(-1);
 		}
 	}
@@ -397,6 +414,51 @@ public class Main extends JFrame {
 	}
 	// testing above
 
+
+	/**
+	 * @param filepath - music filepath
+	 * plays some bgm :))
+	 * there are three songs that loop
+	 */
+	public static void playMusic(String filepath){
+
+		try {
+
+			File file = new File((filepath));
+			AudioInputStream stream = AudioSystem.getAudioInputStream(file);
+			clip = AudioSystem.getClip();
+			clip.open(stream);
+			clip.start();
+			clip.loop(Clip.LOOP_CONTINUOUSLY);
+			//sleep to allow enough time for the clip to play
+			Thread.sleep(8102000);
+
+			stream.close();
+
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+
+	}
+	
+	public static void buttonSound() {
+		try {
+
+			File file = new File(("button.wav"));
+			AudioInputStream stream = AudioSystem.getAudioInputStream(file);
+			Clip clip = AudioSystem.getClip();
+			clip.open(stream);
+			clip.start();
+
+			//sleep to allow enough time for the clip to play
+		//	Thread.sleep(500);
+
+			stream.close();
+
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
 	/**
 	 * main method
 	 * 
@@ -405,6 +467,9 @@ public class Main extends JFrame {
 	public static void main(String[] args) {
 		// GUIS should be constructed on the EDT.
 		JFrame tt = new Main();
+		playMusic("theme.wav"); //bgm
+
+
 	}
 
 }
