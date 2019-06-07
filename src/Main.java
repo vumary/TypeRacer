@@ -1,11 +1,9 @@
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -30,7 +28,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
-import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -38,8 +35,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
 import javax.swing.text.Highlighter.HighlightPainter;
-
-import org.omg.CORBA.portable.InputStream;
 
 /**
  * @author Anushree Chaudhuri
@@ -311,7 +306,7 @@ public class Main extends JFrame {
 				PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("prev_record")));
 				out.println(wpm);
 				for (TimeProgress tp : prevRecord)
-				out.println(tp.timeElapsed + " " + tp.percentCompletion);
+					out.println(tp.timeElapsed + " " + tp.percentCompletion);
 				out.close();
 
 			}
@@ -326,11 +321,17 @@ public class Main extends JFrame {
 	 */
 	public void newCar() {
 		// creates as many cars in one line as needed
-		for (int i = 0; i < 4; i++) {
-			Car newCar = new Car("green_102x28.png", i);
-
-			cars2.add(newCar);
-		}
+		Car newCar = new Car("police_Car.png", 0);
+		cars2.add(newCar);
+		// creates as many cars in one line as needed
+		newCar = new Car("red_Car.png", 1);
+		cars2.add(newCar);
+		// creates as many cars in one line as needed
+		newCar = new Car("pink_Car.png", 2);
+		cars2.add(newCar);
+		// creates as many cars in one line as needed
+		newCar = new Car("green_102x28.png", 3);
+		cars2.add(newCar);
 	}
 
 	/**
@@ -348,9 +349,9 @@ public class Main extends JFrame {
 			e.printStackTrace();
 		}
 
-		label.setText("Game Over. WPM: " + wpm + ". High Record: " + rec + ".");
+		label.setText("Game Over. WPM: " + wpm + ". High Score: " + rec + ".");
 
-		int option = (JOptionPane.showOptionDialog(null, "Game Over. WPM: " + wpm + ". High Record: " + rec + ".",
+		int option = (JOptionPane.showOptionDialog(null, "Game Over. WPM: " + wpm + ". High Score: " + rec + ".",
 				"Game Over", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
 				new String[] { "New Game", "Exit" }, null));
 
